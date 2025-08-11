@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reclaim Your Foreskin (RYF)</title>
+    <!-- Chosen Palette: Dark Neon Tones (Dark Neon, Blood Red, Gunmetal Gray, Toxic Green) -->
+    <!-- Application Structure Plan: A single-page, vertical scrolling application designed to mimic an FPS game level. The user progresses downwards through sections: Hero (entry point), Tokenomics (core stats), Roadmap (mission plan), Twitter Scanner (interactive core), and Community Links (exit/CTA). This structure was chosen to create a linear, narrative-driven experience that aligns with the gamified theme, guiding the user from introduction to action in an intuitive flow. Interspersed quote injections maintain thematic tone and break up content blocks. -->
+    <!-- Visualization & Content Choices: Hero: Fullscreen FPS view (HTML/CSS) to immerse. Tokenomics: Gamified "Weapon Upgrade" dashboard (HTML/CSS) to make data engaging. Roadmap: Interactive "Level Select" screen (HTML/CSS/JS) to visualize progress. Twitter Scanner: Simulated retro terminal (HTML/CSS/JS) for a personalized, viral-ready interaction. All choices use HTML/CSS/JS to adhere to the NO SVG/Mermaid constraint and support the retro, pixelated aesthetic. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;700&family=Press+Start+2P&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-bg: #0d0208;
+            --color-red: #FF0000;
+            --color-gray: #53565A;
+            --color-green: #39FF14;
+            --color-cyan: #00FFFF;
+            --color-magenta: #FF00FF;
+            --font-primary: 'Press Start 2P', cursive;
+            --font-secondary: 'Pixelify Sans', sans-serif;
+        }
+        ::-webkit-scrollbar { display: none; }
+        html { scroll-behavior: smooth; }
+        body {
+            background-color: var(--color-bg);
+            color: white;
+            font-family: var(--font-secondary);
+            overflow-x: hidden;
+            cursor: none;
+            background-image: url('https://www.transparenttextures.com/patterns/crissxcross.png');
+        }
+        .font-primary { font-family: var(--font-primary); }
+        .font-secondary { font-family: var(--font-secondary); }
+        .text-glow { text-shadow: 0 0 5px var(--color-green), 0 0 10px var(--color-green), 0 0 15px var(--color-green), 0 0 20px var(--color-green); }
+        .box-glow { box-shadow: 0 0 5px var(--color-green), 0 0 10px var(--color-green) inset; }
+        .red-glow { text-shadow: 0 0 5px var(--color-red), 0 0 10px var(--color-red), 0 0 15px var(--color-red); }
+        .cyan-glow { text-shadow: 0 0 7px var(--color-cyan), 0 0 12px var(--color-cyan), 0 0 18px var(--color-cyan); }
+        .section { min-height: 100vh; padding: 5rem 1rem; display: flex; flex-direction: column; justify-content: center; align-items: center; position: relative; overflow: hidden; border-bottom: 4px solid var(--color-gray); }
+        .custom-cursor {
+            position: fixed;
+            width: 30px;
+            height: 30px;
+            border: 2px solid var(--color-green);
+            border-radius: 50%;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            transition: transform 0.1s ease-out, background-color 0.2s ease;
+            z-index: 9999;
+        }
+        .custom-cursor::before, .custom-cursor::after {
+            content: '';
+            position: absolute;
+            background-color: var(--color-green);
+        }
+        .custom-cursor::before { top: 50%; left: 0; width: 100%; height: 2px; transform: translateY(-50%); }
+        .custom-cursor::after { left: 50%; top: 0; height: 100%; width: 2px; transform: translateX(-50%); }
+        body:hover .custom-cursor { transform: translate(-50%, -50%) scale(1.1); }
+        .glitch { animation: glitch-anim 1s infinite; }
+        .glitch[data-text]::before, .glitch[data-text]::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--color-bg);
+            overflow: hidden;
+        }
+        .glitch[data-text]::before { left: 2px; text-shadow: -2px 0 var(--color-red); animation: glitch-anim-2 1.5s infinite linear reverse; }
+        .glitch[data-text]::after { left: -2px; text-shadow: -2px 0 var(--color-green); animation: glitch-anim-1 2s infinite linear reverse; }
+        @keyframes glitch-anim-1 { 0%, 100% { clip-path: inset(0 0 95% 0); } 25% { clip-path: inset(50% 0 20% 0); } 50% { clip-path: inset(80% 0 5% 0); } 75% { clip-path: inset(30% 0 60% 0); } }
+        @keyframes glitch-anim-2 { 0%, 100% { clip-path: inset(95% 0 0 0); } 25% { clip-path: inset(10% 0 80% 0); } 50% { clip-path: inset(40% 0 45% 0); } 75% { clip-path: inset(70% 0 10% 0); } }
+        .flicker { animation: flicker-anim 3s infinite steps(1); }
+        @keyframes flicker-anim { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } 52% { opacity: 1; } 55% { opacity: 0.2; } 56% { opacity: 1; } }
+        .typewriter-cursor::after { content: '_'; animation: blink 1s step-end infinite; }
+        @keyframes blink { 50% { opacity: 0; } }
+        .scanline::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            background-size: 100% 4px, 6px 100%;
+            pointer-events: none;
+            z-index: 2;
+            animation: scanline-anim 10s linear infinite;
+        }
+        @keyframes scanline-anim {
+            from { background-position: 0 0; }
+            to { background-position: 0 100vh; }
+        }
+        .recoil { animation: recoil-anim 0.1s ease-out; }
+        @keyframes recoil-anim { 0%, 100% { transform: scale(1); } 50% { transform: scale(0.95); } }
+        .screen-flash { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: white; opacity: 0; pointer-events: none; z-index: 9998; }
+        .flash-anim { animation: flash-animation 0.2s ease-out; }
+        @keyframes flash-animation { 0% { opacity: 0.7; } 100% { opacity: 0; } }
+        .fade-in { opacity: 0; transition: opacity 1s ease-in-out; }
+        .fade-in.visible { opacity: 1; }
+        .progress-bar-inner {
+            width: 0%;
+            height: 100%;
+            background-color: var(--color-green);
+            transition: width 2s ease-out;
+            box-shadow: 0 0 10px var(--color-green), 0 0 20px var(--color-green);
+        }
+       
+        .hero-card:hover {
+            transform: translateY(-10px) scale(1.05);
+            border-color: var(--color-green);
+            box-shadow: 0 15px 25px rgba(0, 255, 20, 0.2);
+        }
+        .hero-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: filter 0.4s ease-in-out, transform 0.4s ease;
+        }
+        .hero-card:hover img {
+            filter: saturate(1.5) brightness(1.1);
+            transform: scale(1.1);
+        }
+        .hero-card-overlay {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-primary);
+            font-size: 1.5rem;
+            text-shadow: 0 0 8px #000;
+        }
+        .hero-card:hover .hero-card-overlay {
+            opacity: 1;
+        }
+        .community-link:hover {
+            box-shadow: 0 0 20px var(--color-cyan), 0 0 30px var(--color-cyan) inset;
+            transform: scale(1.05) translateY(-5px);
+            filter: brightness(1.1);
+        }
+
+        /* --- Hero HUD add-ons --- */
+        .hud-corner { position: absolute; width: 48px; height: 48px; z-index: 11; }
+        .hud-corner.tl { top: 12px; left: 12px; border-top: 3px solid var(--color-cyan); border-left: 3px solid var(--color-cyan); }
+        .hud-corner.tr { top: 12px; right: 12px; border-top: 3px solid var(--color-cyan); border-right: 3px solid var(--color-cyan); }
+        .hud-corner.bl { bottom: 12px; left: 12px; border-bottom: 3px solid var(--color-cyan); border-left: 3px solid var(--color-cyan); }
+        .hud-corner.br { bottom: 12px; right: 12px; border-bottom: 3px solid var(--color-cyan); border-right: 3px solid var(--color-cyan); }
+
+        .hero-cta { border: 4px solid var(--color-cyan); background: rgba(0,0,0,0.6); color: #cffafe; box-shadow: 0 0 18px var(--color-cyan), 0 0 18px var(--color-cyan) inset; transition: transform .2s ease, background .2s ease; }
+        .hero-cta:hover { background: var(--color-cyan); color: #000; transform: translateY(-2px) scale(1.03); }
+
+        .stat-pill { border: 2px solid var(--color-cyan); background: rgba(0,0,0,0.5); color: #a7f3d0; box-shadow: 0 0 10px rgba(0,255,255,0.25) inset; }
+        .stat-number { font-family: var(--font-primary); font-size: 1.25rem; }
+
+        .mini-radar { width: 120px; height: 120px; border: 3px solid var(--color-cyan); border-radius: 50%; position: relative; box-shadow: 0 0 20px rgba(0,255,255,0.4) inset; background: radial-gradient(circle at center, rgba(0,255,255,0.12) 0%, rgba(0,0,0,0) 60%); overflow: hidden; }
+        .mini-radar::after { content: ''; position: absolute; width: 50%; height: 2px; background: var(--color-cyan); left: 50%; top: 50%; transform-origin: left center; animation: radar-sweep 3s linear infinite; box-shadow: 0 0 10px var(--color-cyan); }
+        @keyframes radar-sweep { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        .mini-radar .dot { position: absolute; width: 6px; height: 6px; background: var(--color-green); border-radius: 50%; box-shadow: 0 0 8px var(--color-green); animation: dot-blink 2s infinite; }
+        .mini-radar .dot:nth-child(1) { left: 20%; top: 30%; animation-delay: .2s; }
+        .mini-radar .dot:nth-child(2) { right: 22%; top: 55%; animation-delay: .9s; }
+        .mini-radar .dot:nth-child(3) { left: 40%; bottom: 18%; animation-delay: 1.4s; }
+        @keyframes dot-blink { 0%, 100% { opacity: .25; } 50% { opacity: 1; } }
+
+        /* Transmission equalizer */
+        .eq-bar {
+            width: 6px;
+            background: var(--color-cyan);
+            box-shadow: 0 0 10px var(--color-cyan);
+            height: 20%;
+            transform-origin: bottom center;
+            animation: eq-pulse 1.2s ease-in-out infinite;
+        }
+        .eq-bar:nth-child(1) { animation-delay: 0s; }
+        .eq-bar:nth-child(2) { animation-delay: .1s; }
+        .eq-bar:nth-child(3) { animation-delay: .2s; }
+        .eq-bar:nth-child(4) { animation-delay: .3s; }
+        .eq-bar:nth-child(5) { animation-delay: .4s; }
+        .eq-bar:nth-child(6) { animation-delay: .5s; }
+        .eq-bar:nth-child(7) { animation-delay: .6s; }
+        .eq-bar:nth-child(8) { animation-delay: .7s; }
+        @keyframes eq-pulse {
+            0%, 100% { height: 25%; opacity: .8; }
+            50% { height: 100%; opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <header id="page-header" class="fixed top-0 left-0 w-full z-50 flex justify-center py-4 text-center">
+        <div id="contract-address-container" class="font-primary text-sm md:text-base text-green-400 cursor-pointer transition-all duration-300 hover:text-white p-2 border-2 border-green-500/0 hover:border-green-500 hover:text-glow" title="Click to copy">
+            <span id="contract-text">CA: 000000000</span>
+        </div>
+    </header>
+
+    <div class="custom-cursor"></div>
+    <div id="screen-flash" class="screen-flash"></div>
+
+    <audio id="bg-music" loop>
+        <source src="https://cdn.pixabay.com/audio/2022/11/23/audio_8543441ce5.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="click-sound" src="https://cdn.pixabay.com/audio/2022/03/15/audio_2b122c3329.mp3"></audio>
+    <audio id="gunshot-sound" src="https://cdn.pixabay.com/audio/2021/08/04/audio_a2fce27f77.mp3"></audio>
+    <audio id="typewriter-sound" src="https://cdn.pixabay.com/audio/2022/03/10/audio_c359e6a173.mp3"></audio>
+    <audio id="scan-sound" src="https://cdn.pixabay.com/audio/2022/02/21/audio_55955d28b6.mp3"></audio>
+    <audio id="reload-sound" src="https://cdn.pixabay.com/audio/2022/01/18/audio_89304e28a5.mp3"></audio>
+
+    <div id="music-toggle" class="fixed bottom-4 right-4 z-50 text-green-400 font-primary text-xs cursor-pointer border-2 border-green-400 p-2 hover:bg-green-400 hover:text-black transition-all duration-300 hover:text-glow">
+        MUSIC: OFF
+    </div>
+
+    <section id="hero" class="section justify-between bg-cover bg-center relative" style="background-image: url('cyber_punk_dark.jpg'); padding-top: 10rem;">
+        <div class="absolute inset-0 bg-black/50 scanline"></div>
+        <!-- HUD Corners -->
+        <div class="hud-corner tl"></div>
+        <div class="hud-corner tr"></div>
+        <div class="hud-corner bl"></div>
+        <div class="hud-corner br"></div>
+
+        <!-- Mini Radar -->
+        <div class="absolute right-6 top-6 z-10 hidden md:block">
+            <div class="mini-radar">
+                <span class="dot"></span>
+                <span class="dot"></span>
+                <span class="dot"></span>
+            </div>
+        </div>
+
+        <div class="text-center z-10">
+            <h1 class="font-primary text-4xl md:text-7xl red-glow flicker">🩸 Reclaim Your Foreskin 🩸</h1>
+            <p class="mt-4 text-xl md:text-2xl font-secondary">Blast through the deception. Take back what’s yours.</p>
+
+            <!-- CTAs -->
+            <div class="mt-10 flex flex-col md:flex-row items-center justify-center gap-4">
+                <a href="#scanner" class="hero-cta font-primary text-lg md:text-xl px-6 py-4">INITIATE SCAN</a>
+                <a href="#community" class="hero-cta font-primary text-lg md:text-xl px-6 py-4">JOIN RESISTANCE</a>
+            </div>
+
+            <!-- Stats Bar -->
+            <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
+                <div class="stat-pill px-4 py-3">AGENTS ONLINE: <span class="stat-number" data-counter-target="7421">0</span></div>
+                <div class="stat-pill px-4 py-3">OPERATIONS: <span class="stat-number" data-counter-target="128">0</span></div>
+                <div class="stat-pill px-4 py-3">SECURITY LEVEL: <span class="stat-number" data-counter-target="99">0</span>%</div>
+            </div>
+        </div>
+    </section>
+    
+    <section id="transmission" class="section scanline" style="background: radial-gradient(ellipse at center, #081b21 0%, var(--color-bg) 80%); background-image: url('4.png'), radial-gradient(ellipse at center, #081b21 0%, var(--color-bg) 80%); background-size: cover; background-position: center; position: relative;">
+        <div style="position:absolute;inset:0;background:rgba(8,27,33,0.7);backdrop-filter:blur(2px);z-index:0;"></div>
+        <div class="w-full max-w-4xl border-8 border-cyan-400 bg-black/80 p-8" style="box-shadow: 0 0 25px var(--color-cyan), 0 0 40px var(--color-cyan) inset; position:relative; z-index:1;">
+            <div class="flex flex-col md:flex-row items-center md:items-start gap-8">
+                <div class="md:w-1/3 flex flex-col items-center gap-4">
+                    <div class="mini-radar" style="width:140px;height:140px;">
+                        <span class="dot"></span>
+                        <span class="dot"></span>
+                        <span class="dot"></span>
+                    </div>
+                    <div class="flex items-end gap-2 h-16">
+                        <div class="eq-bar"></div>
+                        <div class="eq-bar"></div>
+                        <div class="eq-bar"></div>
+                        <div class="eq-bar"></div>
+                        <div class="eq-bar"></div>
+                        <div class="eq-bar"></div>
+                        <div class="eq-bar"></div>
+                        <div class="eq-bar"></div>
+                    </div>
+                </div>
+                <div class="md:w-2/3 text-cyan-100">
+                    <h2 class="font-primary text-3xl md:text-5xl cyan-glow mb-4">INCOMING TRANSMISSION</h2>
+                    <p id="transmission-text" class="font-mono text-lg md:text-xl leading-relaxed border border-cyan-500 bg-black/40 p-4 min-h-[96px] typewriter-cursor"></p>
+                    <div class="mt-4 flex flex-wrap gap-3">
+                        <span class="stat-pill px-3 py-2">ENCRYPTION: AES-256</span>
+                        <span class="stat-pill px-3 py-2">CHANNEL: SECURE</span>
+                        <span class="stat-pill px-3 py-2">VISUAL: CRT MODE</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="scanner" class="section scanline" style="background: radial-gradient(ellipse at center, #081b21 0%, var(--color-bg) 80%); background-image: url('6.png'), radial-gradient(ellipse at center, #081b21 0%, var(--color-bg) 80%); background-size: cover; background-position: center; position: relative;">
+        <div style="position:absolute;inset:0;background:rgba(8,27,33,0.7);backdrop-filter:blur(2px);z-index:0;"></div>
+        <div class="w-full max-w-4xl border-8 border-cyan-400 bg-black/80 p-8 text-green-400 font-mono" style="box-shadow: 0 0 25px var(--color-cyan), 0 0 40px var(--color-cyan) inset; position:relative; z-index:1;">
+            <p id="scanner-prompt" class="text-2xl typewriter-cursor cyan-glow"></p>
+            <form id="twitter-form" class="mt-4 flex gap-4">
+                <span class="text-2xl font-bold cyan-glow">&gt;</span>
+                <input id="twitter-handle" type="text" class="flex-grow bg-transparent border-b-2 border-cyan-400 focus:outline-none text-2xl text-cyan-300 transition-all duration-300 focus:border-cyan-200 focus:text-white" autocomplete="off">
+                <button type="submit" class="font-primary text-xl bg-cyan-600 hover:bg-cyan-700 px-4 py-2 border-2 border-black text-black transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-cyan-500/50">SUBMIT</button>
+            </form>
+            <div id="scanner-ui" class="hidden mt-8">
+                <div class="w-full bg-gray-700 border-2 border-cyan-400 h-8">
+                    <div id="progress-bar" class="progress-bar-inner bg-cyan-400" style="box-shadow: 0 0 10px var(--color-cyan);"></div>
+                </div>
+                <p id="scan-status" class="text-center mt-2 text-xl font-primary flicker cyan-glow"></p>
+            </div>
+            <div id="dossier" class="hidden mt-8 grid md:grid-cols-3 gap-6 border-4 border-cyan-400 p-4 bg-black/20" style="backdrop-filter: blur(4px);">
+                <div class="md:col-span-1 flex items-center justify-center">
+                    <img id="dossier-pfp" src="" alt="Twitter Profile Picture" class="w-40 h-40 border-4 border-cyan-400 object-cover" style="filter: grayscale(1) sepia(1) hue-rotate(180deg) brightness(1.2) contrast(1.1);">
+                </div>
+                <div class="md:col-span-2 text-lg text-cyan-300">
+                    <p><span class="font-bold">NAME:</span> <span id="dossier-name"></span></p>
+                    <p><span class="font-bold">HANDLE:</span> <span id="dossier-handle"></span></p>
+                    <p class="mt-2"><span class="font-bold">BIO:</span></p>
+                    <p id="dossier-bio" class="h-24 overflow-y-auto border border-cyan-600 p-2 bg-black/30"></p>
+                    <p id="dossier-meme" class="mt-4 font-primary text-red-500 text-xl text-center red-glow"></p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="community" class="section scanline" style="background: radial-gradient(ellipse at center, #081b21 0%, var(--color-bg) 80%); background-image: url('1.png'), radial-gradient(ellipse at center, #081b21 0%, var(--color-bg) 80%); background-size: cover; background-position: center; position: relative;">
+        <div style="position:absolute;inset:0;background:rgba(8,27,33,0.7);backdrop-filter:blur(2px);z-index:0;"></div>
+        <div class="w-full max-w-4xl border-8 border-cyan-400 bg-black/80 p-8 text-center" style="box-shadow: 0 0 25px var(--color-cyan), 0 0 40px var(--color-cyan) inset; position:relative; z-index:1;">
+            <h2 class="font-primary text-4xl md:text-6xl cyan-glow mb-12">JOIN THE RESISTANCE</h2>
+            <div class="flex flex-col md:flex-row gap-6 justify-center">
+                <a href="#" class="community-link font-primary text-xl md:text-2xl text-cyan-200 px-6 py-4 border-4 border-cyan-400 bg-black/40 transition-all duration-300 hover:bg-cyan-600 hover:text-black hover:shadow-lg hover:shadow-cyan-500/50">🔫 Twitter</a>
+                <a href="#" class="community-link font-primary text-xl md:text-2xl text-cyan-200 px-6 py-4 border-4 border-cyan-400 bg-black/40 transition-all duration-300 hover:bg-cyan-600 hover:text-black hover:shadow-lg hover:shadow-cyan-500/50">🧠 Axiom</a>
+                <a href="#" class="community-link font-primary text-xl md:text-2xl text-cyan-200 px-6 py-4 border-4 border-cyan-400 bg-black/40 transition-all duration-300 hover:bg-cyan-600 hover:text-black hover:shadow-lg hover:shadow-cyan-500/50">🚀 Pumpfun</a>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const cursor = document.querySelector('.custom-cursor');
+            const playerGun = document.getElementById('player-gun');
+            const startMissionBtn = document.getElementById('start-mission-btn');
+            const tokenomicsSection = document.getElementById('tokenomics');
+            const screenFlash = document.getElementById('screen-flash');
+            const bgMusic = document.getElementById('bg-music');
+            const musicToggle = document.getElementById('music-toggle');
+            const clickSound = document.getElementById('click-sound');
+            const gunshotSound = document.getElementById('gunshot-sound');
+            const typewriterSound = document.getElementById('typewriter-sound');
+            const scanSound = document.getElementById('scan-sound');
+            const reloadSound = document.getElementById('reload-sound');
+            let audioUnlocked = false;
+            let audioCtx = null;
+
+            function ensureAudioContext() {
+                if (!audioCtx) {
+                    const Ctx = window.AudioContext || window.webkitAudioContext;
+                    if (Ctx) audioCtx = new Ctx();
+                }
+                if (audioCtx && audioCtx.state === 'suspended') {
+                    audioCtx.resume().catch(() => {});
+                }
+            }
+
+            function playSound(sound) {
+                if (!sound) return;
+                sound.currentTime = 0;
+                sound.play().catch(() => {});
+            }
+
+            function playSoundSafe(audioEl, fallbackFn) {
+                if (audioUnlocked && audioEl) {
+                    try {
+                        audioEl.currentTime = 0;
+                        const p = audioEl.play();
+                        if (p && typeof p.then === 'function') {
+                            p.catch(() => { fallbackFn && fallbackFn(); });
+                        }
+                        return;
+                    } catch (_) { /* fall through */ }
+                }
+                fallbackFn && fallbackFn();
+            }
+
+            function playGunshotSynth() {
+                ensureAudioContext();
+                if (!audioCtx) return;
+                const duration = 0.18;
+                const sampleRate = audioCtx.sampleRate;
+                const bufferSize = Math.floor(duration * sampleRate);
+                const buffer = audioCtx.createBuffer(1, bufferSize, sampleRate);
+                const data = buffer.getChannelData(0);
+                for (let i = 0; i < bufferSize; i++) {
+                    const t = i / sampleRate;
+                    const decay = Math.exp(-20 * t);
+                    // White noise burst with quick decay
+                    data[i] = (Math.random() * 2 - 1) * decay;
+                }
+                const src = audioCtx.createBufferSource();
+                const filter = audioCtx.createBiquadFilter();
+                filter.type = 'highpass';
+                filter.frequency.value = 1000;
+                src.buffer = buffer;
+                src.connect(filter).connect(audioCtx.destination);
+                src.start();
+            }
+
+            function playBeep(frequency = 660, duration = 0.08, type = 'square') {
+                ensureAudioContext();
+                if (!audioCtx) return;
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = type;
+                osc.frequency.value = frequency;
+                gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+                osc.connect(gain).connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + duration);
+            }
+
+            document.body.addEventListener('click', () => { audioUnlocked = true; ensureAudioContext(); }, { once: true });
+            
+            // --- Contract Address Copy ---
+            const contractAddressContainer = document.getElementById('contract-address-container');
+            const contractTextEl = document.getElementById('contract-text');
+            const originalContractText = contractTextEl.textContent;
+            const contractAddressValue = '000000000';
+
+            contractAddressContainer.addEventListener('click', () => {
+                if (navigator.clipboard) {
+                    navigator.clipboard.writeText(contractAddressValue).then(() => {
+                        contractTextEl.textContent = 'COPIED!';
+                        contractAddressContainer.classList.add('text-glow');
+                        playSoundSafe(clickSound, () => playBeep(990, 0.08));
+                        
+                        setTimeout(() => {
+                            contractTextEl.textContent = originalContractText;
+                            contractAddressContainer.classList.remove('text-glow');
+                        }, 2000);
+                    }).catch(err => {
+                         console.error('Failed to copy text: ', err);
+                    });
+                }
+            });
+
+
+            musicToggle.addEventListener('click', () => {
+                if (bgMusic.paused) {
+                    bgMusic.play();
+                    musicToggle.textContent = 'MUSIC: ON';
+                    musicToggle.classList.add('text-glow');
+                } else {
+                    bgMusic.pause();
+                    musicToggle.textContent = 'MUSIC: OFF';
+                    musicToggle.classList.remove('text-glow');
+                }
+            });
+
+            document.addEventListener('mousemove', e => {
+                cursor.style.left = e.clientX + 'px';
+                cursor.style.top = e.clientY + 'px';
+
+                if (playerGun) {
+                    const dx = (e.clientX - window.innerWidth / 2) / (window.innerWidth / 2);
+                    const dy = (e.clientY - window.innerHeight / 2) / (window.innerHeight / 2);
+                    playerGun.style.transform = `translateX(${-dx * 20}px) translateY(${-dy * 10}px)`;
+                }
+            });
+
+            function doScreenFlash() {
+                screenFlash.classList.add('flash-anim');
+                setTimeout(() => screenFlash.classList.remove('flash-anim'), 200);
+            }
+
+            document.querySelectorAll('#hero .hero-card').forEach(el => {
+                el.addEventListener('click', () => {
+                    playSoundSafe(gunshotSound, playGunshotSynth);
+                    doScreenFlash();
+                });
+            });
+
+            // Hero CTA buttons: sounds + flash
+            document.querySelectorAll('.hero-cta').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const href = (btn.getAttribute('href') || '').toLowerCase();
+                    if (href.includes('scanner')) {
+                        playSoundSafe(gunshotSound, playGunshotSynth);
+                    } else {
+                        playSoundSafe(reloadSound, () => playBeep(440, 0.1));
+                    }
+                    doScreenFlash();
+                });
+            });
+
+            // --- Animated counters on hero ---
+            const counters = document.querySelectorAll('.stat-number');
+            counters.forEach(counter => {
+                const target = parseInt(counter.getAttribute('data-counter-target') || '0', 10);
+                let value = 0;
+                const durationMs = 1500;
+                const stepMs = 20;
+                const increment = Math.max(1, Math.floor(target / (durationMs / stepMs)));
+                const timer = setInterval(() => {
+                    value += increment;
+                    if (value >= target) { value = target; clearInterval(timer); }
+                    counter.textContent = value.toString();
+                }, stepMs);
+            });
+
+            document.querySelectorAll('.community-link').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    playSoundSafe(reloadSound, () => playBeep(440, 0.1));
+                    doScreenFlash();
+                    setTimeout(() => {
+                        window.open(link.href, '_blank');
+                    }, 200);
+                });
+            });
+            
+            function typeWriter(element, text, i = 0) {
+                if(!element) return;
+                if (i < text.length) {
+                    element.innerHTML += text.charAt(i);
+                    if (audioUnlocked) { playSound(typewriterSound); }
+                    setTimeout(() => typeWriter(element, text, i + 1), 60);
+                }
+            }
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, { threshold: 0.5 });
+
+            document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+            
+            const scannerPromptEl = document.getElementById('scanner-prompt');
+            typeWriter(scannerPromptEl, "Soldier, identify yourself! What’s your Twitter handle?");
+
+            // Rotating quotes for transmission section (typewriter)
+            const transmissionEl = document.getElementById('transmission-text');
+            const transmissionLines = [
+                'They took my foreskin. I\'m getting it back.',
+                'Operation RYF is green-lit. Hold the line.',
+                'No more lies. Reclaim what\'s yours.'
+            ];
+            let tIndex = 0;
+            function typeTransmission() {
+                if (!transmissionEl) return;
+                transmissionEl.textContent = '';
+                typeWriter(transmissionEl, transmissionLines[tIndex]);
+                tIndex = (tIndex + 1) % transmissionLines.length;
+            }
+            typeTransmission();
+            setInterval(typeTransmission, 5000);
+
+            const twitterForm = document.getElementById('twitter-form');
+            const twitterHandleInput = document.getElementById('twitter-handle');
+            const scannerUi = document.getElementById('scanner-ui');
+            const progressBar = document.getElementById('progress-bar');
+            const scanStatus = document.getElementById('scan-status');
+            const dossier = document.getElementById('dossier');
+            const dossierImg = document.getElementById('dossier-pfp');
+            const dossierName = document.getElementById('dossier-name');
+            const dossierHandle = document.getElementById('dossier-handle');
+            const dossierBio = document.getElementById('dossier-bio');
+
+            function sanitizeHandle(value) {
+                const raw = (value || '').trim();
+                if (!raw) return '';
+                // Accept both username and full Twitter/X URL
+                try {
+                    // Accept both twitter.com and x.com
+                    if (raw.includes('twitter.com') || raw.includes('x.com')) {
+                        let url = raw;
+                        if (!url.startsWith('http')) url = 'https://' + url;
+                        const parsed = new URL(url);
+                        const parts = parsed.pathname.split('/').filter(Boolean);
+                        if (parts.length > 0) {
+                            const candidate = parts[0];
+                            const reserved = ['home','explore','notifications','messages','search','settings','compose','login','signup','i','hashtag','logout','tos','privacy','about','intent','share','download'];
+                            if (/^[A-Za-z0-9_]{1,15}$/.test(candidate) && !reserved.includes(candidate.toLowerCase())) {
+                                return candidate;
+                            }
+                        }
+                        return '';
+                    }
+                } catch (_) { /* ignore */ }
+                // Remove leading @ for plain handles
+                return raw.replace(/^@+/, '');
+            }
+
+            async function fetchTwitterIntel(handle) {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 8000);
+                try {
+                    const res = await fetch(`http://127.0.0.1:8787/?username=${encodeURIComponent(handle)}`, { signal: controller.signal });
+                    if (!res.ok) {
+                        throw new Error('Request failed');
+                    }
+                    return await res.json();
+                } finally {
+                    clearTimeout(timeoutId);
+                }
+            }
+
+            twitterForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const raw = twitterHandleInput.value;
+                const handle = sanitizeHandle(raw);
+                if (!handle) return;
+
+                playSoundSafe(scanSound, () => playBeep(880, 0.12, 'sawtooth'));
+                scannerUi.classList.remove('hidden');
+                dossier.classList.add('hidden');
+                twitterHandleInput.disabled = true;
+                scanStatus.classList.remove('text-red-500');
+                scanStatus.textContent = 'FETCHING INTEL...';
+                progressBar.style.width = '5%';
+
+                try {
+                    const data = await fetchTwitterIntel(handle);
+                    progressBar.style.width = '100%';
+                    scanStatus.textContent = 'BIOMETRIC SCAN COMPLETE';
+                    scanStatus.classList.add('text-glow');
+                    displayDossier(data, handle);
+                } catch (err) {
+                    progressBar.style.width = '100%';
+                    scanStatus.textContent = 'TARGET NOT FOUND';
+                    scanStatus.classList.remove('text-glow');
+                    scanStatus.classList.add('text-red-500');
+                    displayDossier(null, handle);
+                } finally {
+                    twitterHandleInput.disabled = false;
+                    twitterHandleInput.value = '';
+                    setTimeout(() => { scannerUi.classList.add('hidden'); dossier.classList.remove('hidden'); }, 300);
+                }
+            });
+
+            function displayDossier(data, fallbackHandle) {
+                const memePhrases = [
+                    "This agent’s been circumcised. Deploying RYF backup.",
+                    "Operation Foreskin: Authorized.",
+                    "Status: Shaftless. Remedy: $RYF",
+                    "Circumcised Wallet Detected.",
+                    "Mission Failed... Just kidding. WAGMI."
+                ];
+                const resolvedHandle = data && data.handle ? data.handle : `@${fallbackHandle}`;
+                // If name is missing, use handle (without @) as name
+                let resolvedName = (data && data.name) ? data.name : '';
+                if (!resolvedName) {
+                    resolvedName = (resolvedHandle.startsWith('@') ? resolvedHandle.slice(1) : resolvedHandle).toUpperCase();
+                }
+                const resolvedPfp = data && data.pfp_url ? data.pfp_url : `https://unavatar.io/twitter/${fallbackHandle}`;
+
+                dossierImg.src = resolvedPfp;
+                dossierName.textContent = resolvedName;
+                dossierHandle.textContent = resolvedHandle;
+                dossierBio.textContent = 'Intel redacted for operational security. This soldier is one of us. Ready to reclaim what was lost.';
+                document.getElementById('dossier-meme').textContent = memePhrases[Math.floor(Math.random() * memePhrases.length)];
+
+                scanStatus.classList.remove('text-glow');
+            }
+
+            window.addEventListener('keydown', (e) => {
+                // Remove scroll on 'w', 's', 'ArrowUp', 'ArrowDown'
+                // (No-op)
+            });
+        });
+    </script>
+</body>
+</html>
